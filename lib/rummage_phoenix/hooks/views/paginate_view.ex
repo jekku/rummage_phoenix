@@ -40,11 +40,11 @@ defmodule Rummage.Phoenix.PaginateView do
   defmacro __using__(opts) do
     quote do
       def pagination_link(conn, rummage) do
-        pagiante_params = rummage["paginate"]
+        paginate_params = rummage["paginate"]
 
-        per_page = String.to_integer(pagiante_params["per_page"] || Rummage.Phoenix.default_per_page)
-        page = String.to_integer(pagiante_params["page"] || "1")
-        max_page = String.to_integer(pagiante_params["max_page"] || "1")
+        per_page = String.to_integer(paginate_params["per_page"] || Rummage.Phoenix.default_per_page)
+        page = String.to_integer(paginate_params["page"] || "1")
+        max_page = String.to_integer(paginate_params["max_page"] || "1")
 
         if max_page > 1 do
           raw """
@@ -65,14 +65,14 @@ defmodule Rummage.Phoenix.PaginateView do
             [raw_disabled_link("Previous")]
           true ->
             [raw_link("Previous", apply(unquote(opts[:helpers]),
-              String.to_atom("#{unquote(opts[:struct])}_path"), [conn, :index, %{rummage: Map.put(rummage, "paginate", %{"per_page"=> per_page, "page"=> page - 1})}]))]
+              String.to_atom("#{unquote(opts[:struct])}_path"), [conn, :index, rummage: Map.put(rummage, "paginate", %{"per_page"=> per_page, "page"=> page - 1})]))]
         end
 
         raw_links = raw_links ++ Enum.map(1..max_page, fn(x) ->
           case page == x do
             true -> raw_active_link(x)
             _ -> raw_link(x, apply(unquote(opts[:helpers]),
-              String.to_atom("#{unquote(opts[:struct])}_path"), [conn, :index, %{rummage: Map.put(rummage, "paginate", %{"per_page"=> per_page, "page"=> x})}]))
+              String.to_atom("#{unquote(opts[:struct])}_path"), [conn, :index, rummage: Map.put(rummage, "paginate", %{"per_page"=> per_page, "page"=> x})]))
           end
         end)
 
@@ -81,7 +81,7 @@ defmodule Rummage.Phoenix.PaginateView do
             [raw_disabled_link("Next")]
           true ->
             [raw_link("Next", apply(unquote(opts[:helpers]),
-              String.to_atom("#{unquote(opts[:struct])}_path"), [conn, :index, %{rummage: Map.put(rummage, "paginate", %{"per_page"=> per_page, "page"=> page + 1})}]))]
+              String.to_atom("#{unquote(opts[:struct])}_path"), [conn, :index, rummage: Map.put(rummage, "paginate", %{"per_page"=> per_page, "page"=> page + 1})]))]
         end
       end
 
